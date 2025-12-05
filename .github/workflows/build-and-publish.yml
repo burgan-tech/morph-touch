@@ -112,12 +112,42 @@ jobs:
     - name: Install dependencies
       run: |
         echo "Installing dependencies..."
-        if [ -f "package-lock.json" ]; then
-          npm ci
-        else
-          npm install
-        fi
-        echo "Dependencies installed successfully"
+        
+        # Retry function for npm install
+        install_with_retry() {
+          local max_attempts=3
+          local attempt=1
+          local delay=5
+          
+          while [ $attempt -le $max_attempts ]; do
+            echo "Attempt $attempt of $max_attempts..."
+            
+            if [ -f "package-lock.json" ]; then
+              if npm ci; then
+                echo "✅ Dependencies installed successfully"
+                return 0
+              fi
+            else
+              if npm install; then
+                echo "✅ Dependencies installed successfully"
+                return 0
+              fi
+            fi
+            
+            if [ $attempt -lt $max_attempts ]; then
+              echo "⚠️  Installation failed, retrying in ${delay} seconds..."
+              sleep $delay
+              delay=$((delay * 2))  # Exponential backoff
+            fi
+            
+            attempt=$((attempt + 1))
+          done
+          
+          echo "❌ Failed to install dependencies after $max_attempts attempts"
+          return 1
+        }
+        
+        install_with_retry
 
     - name: Validate JSON schemas
       run: |

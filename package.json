@@ -9,7 +9,7 @@
     "build": "echo 'Build completed - package is ready'",
     "sync-schema": "node sync-schema-version.js",
     "setup": "node setup.js",
-    "postinstall": "node setup.js && npm run sync-schema",
+    "postinstall": "(node setup.js || true) && npm run sync-schema",
     "prepublishOnly": "npm run sync-schema && npm run validate"
   },
   "bin": {
