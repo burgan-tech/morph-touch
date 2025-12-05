@@ -47,7 +47,7 @@ jobs:
         with:
           projectBaseDir: .
           args: >
-            -Dsonar.projectKey=burgan-tech_vnext-template
+            -Dsonar.projectKey=burgan-tech_morph-touch
             -Dsonar.organization=burgan-tech
             -Dsonar.sources=touch/,index.js,test.js,validate.js
             -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/.gitkeep

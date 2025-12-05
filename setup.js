@@ -6,6 +6,16 @@ const readline = require('readline');
 
 // Check if already set up (domain directory exists and is not touch)
 function isAlreadySetup() {
+  // Check if touch directory exists and has vnext structure (already configured)
+  if (fs.existsSync('touch')) {
+    if (fs.existsSync(path.join('touch', 'Schemas')) ||
+        fs.existsSync(path.join('touch', 'Workflows')) ||
+        fs.existsSync(path.join('touch', 'Tasks'))) {
+      return true;
+    }
+  }
+  
+  // Check for other domain directories
   const entries = fs.readdirSync('.', { withFileTypes: true });
   for (const entry of entries) {
     if (entry.isDirectory() && 
@@ -80,6 +90,11 @@ async function getDomainName() {
       console.error(`❌ Invalid domain name in DOMAIN_NAME environment variable: ${domainName}`);
       process.exit(1);
     }
+  }
+  
+  // In non-interactive mode, skip prompting
+  if (isNonInteractive()) {
+    return null;
   }
   
   // Otherwise prompt for it
@@ -170,6 +185,46 @@ function isInstalledAsDependency() {
   return cwd.includes('node_modules');
 }
 
+// Check if running in non-interactive environment (like npm install)
+function isNonInteractive() {
+  return !process.stdin.isTTY || process.env.CI === 'true' || process.env.NPM_CONFIG_INTERACTIVE === 'false';
+}
+
+// Get domain name from vnext.config.json
+function getDomainFromConfig() {
+  try {
+    if (fs.existsSync('vnext.config.json')) {
+      const config = JSON.parse(fs.readFileSync('vnext.config.json', 'utf8'));
+      if (config.domain && typeof config.domain === 'string') {
+        return config.domain.trim();
+      }
+    }
+  } catch (error) {
+    // If config file doesn't exist or is invalid, return null
+    return null;
+  }
+  return null;
+}
+
+// Check if domain folder from config exists
+function isDomainFolderConfigured() {
+  const domainFromConfig = getDomainFromConfig();
+  if (!domainFromConfig) {
+    return false;
+  }
+  
+  // Check if the domain folder exists and has vnext structure
+  if (fs.existsSync(domainFromConfig)) {
+    if (fs.existsSync(path.join(domainFromConfig, 'Schemas')) ||
+        fs.existsSync(path.join(domainFromConfig, 'Workflows')) ||
+        fs.existsSync(path.join(domainFromConfig, 'Tasks'))) {
+      return true;
+    }
+  }
+  
+  return false;
+}
+
 // Main setup function
 async function setup() {
   // Skip if installed as a dependency
@@ -179,6 +234,15 @@ async function setup() {
 
   console.log('🚀 vNext Template Setup');
   console.log('=======================\n');
+
+  // Check if domain folder from vnext.config.json exists
+  const domainFromConfig = getDomainFromConfig();
+  if (domainFromConfig && isDomainFolderConfigured()) {
+    console.log(`✅ Domain "${domainFromConfig}" is already configured`);
+    console.log(`   Domain folder "${domainFromConfig}" exists and is set up.`);
+    console.log('   Skipping setup. If you want to re-run setup, remove the domain directory first.\n');
+    return;
+  }
 
   // Check if already set up
   if (isAlreadySetup()) {
@@ -196,6 +260,14 @@ async function setup() {
 
   // Get domain name from command line or prompt
   const domainName = await getDomainName();
+  
+  // If no domain name provided (non-interactive mode), skip setup
+  if (!domainName) {
+    console.log('⚠️  Skipping setup in non-interactive mode');
+    console.log('   To set up, run: npm run setup <domain-name>\n');
+    return;
+  }
+  
   console.log(`\n📝 Setting up domain: ${domainName}\n`);
 
   // Replace in all files

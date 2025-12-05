@@ -406,8 +406,8 @@ function formatErrorMessage(err, filePath = null) {
   return message;
 }
 
-// Validation script for vnext-template package
-console.log('🔍 Running vnext-template validation...');
+// Validation script for morph-touch package
+console.log('🔍 Running morph-touch validation...');
 
 let validationsPassed = 0;
 let validationsFailed = 0;

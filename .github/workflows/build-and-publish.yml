@@ -398,11 +398,11 @@ jobs:
           
           ### 📦 Installation
           ```bash
-          npm install @burgan-tech/vnext-template@${{ steps.version.outputs.version }}
+          npm install @burgan-tech/morph-touch@${{ steps.version.outputs.version }}
           ```
           
           ### 🔗 Package Links
-          - [NPM Package](https://www.npmjs.com/package/@burgan-tech/vnext-template)
+          - [NPM Package](https://www.npmjs.com/package/@burgan-tech/morph-touch)
           - [GitHub Packages](https://github.com/${{ github.repository }}/packages)
           
           ### 📋 vNext Template Components
@@ -417,19 +417,19 @@ jobs:
           
           ### 📚 Usage
           ```javascript
-          const vnextTemplate = require('@burgan-tech/vnext-template');
+          const morphTouch = require('@burgan-tech/morph-touch');
           
           // Get domain configuration
-          const config = vnextTemplate.getDomainConfig();
+          const config = morphTouch.getDomainConfig();
           
           // Get all schemas
-          const schemas = vnextTemplate.getSchemas();
+          const schemas = morphTouch.getSchemas();
           
           // Get workflows
-          const workflows = vnextTemplate.getWorkflows();
+          const workflows = morphTouch.getWorkflows();
           
           // Get available component types
-          const types = vnextTemplate.getAvailableTypes();
+          const types = morphTouch.getAvailableTypes();
           ```
           
           ### 📋 Changes
@@ -446,7 +446,7 @@ jobs:
         echo "## 📦 NPM Package Publishing Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Version Information" >> $GITHUB_STEP_SUMMARY
-        echo "- **Package**: \`@burgan-tech/vnext-template\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Package**: \`@burgan-tech/morph-touch\`" >> $GITHUB_STEP_SUMMARY
         echo "- **Version**: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
@@ -474,7 +474,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📋 Installation Instructions" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "npm install @burgan-tech/vnext-template@${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @burgan-tech/morph-touch@${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         else
           echo "### ❌ Publication Failed" >> $GITHUB_STEP_SUMMARY
@@ -483,6 +483,6 @@ jobs:
         
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### 🔗 Quick Links" >> $GITHUB_STEP_SUMMARY
-        echo "- [NPM Package](https://www.npmjs.com/package/@burgan-tech/vnext-template)" >> $GITHUB_STEP_SUMMARY
+        echo "- [NPM Package](https://www.npmjs.com/package/@burgan-tech/morph-touch)" >> $GITHUB_STEP_SUMMARY
         echo "- [GitHub Repository](https://github.com/${{ github.repository }})" >> $GITHUB_STEP_SUMMARY
         echo "- [Workflow Artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
