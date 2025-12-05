@@ -1,0 +1,488 @@
+name: Build and Publish to NPM
+
+on:
+  push:
+    branches:
+      - 'release-v*'
+  workflow_dispatch:
+    inputs:
+      version_override:
+        description: 'Override version (e.g., 1.0.6). Leave empty to auto-calculate from branch.'
+        required: false
+        type: string
+      force_publish:
+        description: 'Force publish package even if it already exists'
+        required: false
+        default: false
+        type: boolean
+      registry_target:
+        description: 'Target registry for publishing'
+        required: false
+        default: 'npmjs'
+        type: choice
+        options:
+          - 'npmjs'
+          - 'github'
+          - 'both'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      published: ${{ steps.publish.outputs.published }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        registry-url: 'https://registry.npmjs.org'
+        cache: 'npm'
+
+    - name: Calculate version
+      id: version
+      run: |
+        if [ -n "${{ github.event.inputs.version_override }}" ]; then
+          VERSION="${{ github.event.inputs.version_override }}"
+          echo "Using manual version override: $VERSION"
+        else
+          BRANCH_NAME="${{ github.ref_name }}"
+          
+          if [[ "$BRANCH_NAME" =~ ^release-v([0-9]+\.[0-9]+)$ ]]; then
+            BASE_VERSION="${BASH_REMATCH[1]}"
+            echo "Base version from branch: $BASE_VERSION"
+            
+            PATCH=0
+            while true; do
+              VERSION="${BASE_VERSION}.${PATCH}"
+              TAG="v${VERSION}"
+              
+              if git tag -l "$TAG" | grep -q "^$TAG$"; then
+                echo "Version $VERSION already exists, trying next patch version..."
+                PATCH=$((PATCH + 1))
+              else
+                echo "Found available version: $VERSION"
+                break
+              fi
+              
+              if [ $PATCH -gt 100 ]; then
+                echo "Error: Could not find available patch version after 100 attempts"
+                exit 1
+              fi
+            done
+          else
+            echo "Branch name doesn't match release-vX.Y pattern, using version from package.json"
+            CURRENT_VERSION=$(node -p "require('./package.json').version")
+            
+            if [ -z "$CURRENT_VERSION" ]; then
+              echo "Error: Could not determine version from package.json"
+              exit 1
+            fi
+            
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+            PATCH=$((PATCH + 1))
+            VERSION="${MAJOR}.${MINOR}.${PATCH}"
+            echo "Incremented version: $VERSION"
+          fi
+        fi
+        
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Final version: $VERSION"
+
+    - name: Update version in package.json
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        npm version "$VERSION" --no-git-tag-version
+        echo "Updated package.json with version $VERSION"
+        
+        echo "Package details:"
+        cat package.json | jq '.name, .version, .description'
+
+    - name: Install dependencies
+      run: |
+        echo "Installing dependencies..."
+        if [ -f "package-lock.json" ]; then
+          npm ci
+        else
+          npm install
+        fi
+        echo "Dependencies installed successfully"
+
+    - name: Validate JSON schemas
+      run: |
+        echo "Validating JSON schemas and workflow definitions..."
+        
+        # Find domain directory (could be template placeholder or actual domain name)
+        DOMAIN_DIRS=$(find . -maxdepth 1 -type d -name "*" | grep -v "^\.$" | grep -v "^\./\." | grep -v "node_modules" | grep -v "\.git")
+        
+        DOMAIN_DIR=""
+        for dir in $DOMAIN_DIRS; do
+          # Remove leading ./
+          clean_dir=$(echo "$dir" | sed 's|^\./||')
+          # Skip if it's a hidden directory, node_modules, or .git
+          if [[ "$clean_dir" != .* && "$clean_dir" != "node_modules" && "$clean_dir" != ".git" ]]; then
+            # Check if it contains vnext structure (Schemas, Workflows, etc.)
+            if [ -d "$dir/Schemas" ] || [ -d "$dir/Workflows" ] || [ -d "$dir/Tasks" ]; then
+              DOMAIN_DIR="$clean_dir"
+              break
+            fi
+          fi
+        done
+        
+        if [ -z "$DOMAIN_DIR" ]; then
+          echo "⚠️  No domain directory found with vnext structure"
+          echo "This might be a template repository - checking for template structure..."
+          
+          # Check if we have template structure
+          if [ -d "touch" ]; then
+            DOMAIN_DIR="touch"
+            echo "✅ Found template domain directory: $DOMAIN_DIR"
+          else
+            echo "❌ No domain directory or template found"
+            exit 1
+          fi
+        else
+          echo "✅ Found domain directory: $DOMAIN_DIR"
+        fi
+        
+        echo "Validating JSON files in: $DOMAIN_DIR"
+        
+        # Count JSON files
+        JSON_COUNT=0
+        if [ -d "$DOMAIN_DIR" ]; then
+          while IFS= read -r -d '' json_file; do
+            echo "Validating $json_file..."
+            if ! jq empty "$json_file" 2>/dev/null; then
+              echo "❌ Invalid JSON in $json_file"
+              exit 1
+            else
+              echo "✅ Valid JSON: $json_file"
+              JSON_COUNT=$((JSON_COUNT + 1))
+            fi
+          done < <(find "$DOMAIN_DIR" -name "*.json" -type f -print0)
+        fi
+        
+        echo "✅ Validated $JSON_COUNT JSON files successfully"
+        
+        # Also validate root JSON files
+        ROOT_JSON_FILES="package.json vnext.config.json"
+        for file in $ROOT_JSON_FILES; do
+          if [ -f "$file" ]; then
+            echo "Validating root file: $file"
+            if ! jq empty "$file" 2>/dev/null; then
+              echo "❌ Invalid JSON in $file"
+              exit 1
+            else
+              echo "✅ Valid JSON: $file"
+            fi
+          fi
+        done
+        
+        echo "🎉 All JSON validation completed successfully"
+
+    - name: Run tests
+      run: |
+        echo "Running tests..."
+        npm test
+
+    - name: Run validation
+      run: |
+        echo "Running validation..."
+        npm run validate
+
+    - name: Build package
+      run: |
+        echo "Building package..."
+        npm run build
+        echo "Build completed successfully"
+
+    - name: Create package tarball
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        PACKAGE_NAME=$(node -p "require('./package.json').name")
+        
+        npm pack
+        
+        SAFE_NAME=$(echo "$PACKAGE_NAME" | sed 's/@//g' | sed 's/\//-/g')
+        SAFE_TARBALL="${SAFE_NAME}-${VERSION}.tgz"
+        
+        if [ -f "${SAFE_TARBALL}" ]; then
+          echo "Package tarball created: ${SAFE_TARBALL}"
+          ls -la "${SAFE_TARBALL}"
+          
+          echo "Package contents:"
+          tar -tzf "${SAFE_TARBALL}" | head -20
+          
+          SIZE=$(stat -c%s "${SAFE_TARBALL}" 2>/dev/null || stat -f%z "${SAFE_TARBALL}" 2>/dev/null || echo "unknown")
+          echo "Package size: $SIZE bytes"
+        else
+          echo "❌ Failed to create package tarball"
+          ls -la *.tgz || echo "No tgz files found"
+          exit 1
+        fi
+
+    - name: Upload package as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: npm-package-${{ steps.version.outputs.version }}
+        path: "*.tgz"
+        retention-days: 30
+
+    - name: Publish to NPM
+      id: publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        REGISTRY_TARGET="${{ github.event.inputs.registry_target || 'npmjs' }}"
+        PUBLISHED="false"
+        
+        echo "🚀 Publishing package to $REGISTRY_TARGET..."
+        
+        publish_to_npmjs() {
+          echo "📦 Publishing to NPM.js..."
+          
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "❌ Error: NPM_TOKEN secret is not configured"
+            return 1
+          fi
+          
+          npm config delete registry || true
+          npm config delete //npm.pkg.github.com/:_authToken || true
+          npm config set registry https://registry.npmjs.org/
+          npm config set //registry.npmjs.org/:_authToken $NODE_AUTH_TOKEN
+          
+          if [ -f package.json.backup ]; then
+            cp package.json.backup package.json
+          else
+            cp package.json package.json.backup
+          fi
+          
+          jq 'del(.publishConfig)' package.json > package.json.tmp && mv package.json.tmp package.json
+          
+          FORCE_FLAG=""
+          if [ "${{ github.event.inputs.force_publish }}" == "true" ]; then
+            echo "⚠️  Force publish enabled"
+            FORCE_FLAG="--force"
+          fi
+          
+          if npm publish $FORCE_FLAG --access public --registry https://registry.npmjs.org/; then
+            echo "✅ Successfully published to NPM.js"
+            return 0
+          else
+            echo "❌ Failed to publish to NPM.js"
+            return 1
+          fi
+        }
+        
+        publish_to_github() {
+          echo "📦 Publishing to GitHub Packages..."
+          
+          if [ -z "$GITHUB_TOKEN" ]; then
+            echo "❌ Error: GITHUB_TOKEN is not available"
+            return 1
+          fi
+          
+          if [ -f package.json.backup ]; then
+            cp package.json.backup package.json
+          fi
+          
+          npm config delete registry || true
+          npm config delete //registry.npmjs.org/:_authToken || true
+          npm config set registry https://npm.pkg.github.com
+          npm config set //npm.pkg.github.com/:_authToken $GITHUB_TOKEN
+          
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          if [[ "$PACKAGE_NAME" != @* ]]; then
+            echo "Adding GitHub scope to package name for GitHub Packages..."
+            SCOPED_NAME="@${{ github.repository_owner }}/${PACKAGE_NAME}"
+            jq ".name = \"$SCOPED_NAME\"" package.json > package.json.tmp
+            mv package.json.tmp package.json
+          fi
+          
+          jq '.publishConfig = {"registry": "https://npm.pkg.github.com", "access": "public"}' package.json > package.json.tmp && mv package.json.tmp package.json
+          
+          if npm publish --registry https://npm.pkg.github.com; then
+            echo "✅ Successfully published to GitHub Packages"
+            return 0
+          else
+            echo "❌ Failed to publish to GitHub Packages"
+            return 1
+          fi
+        }
+        
+        SUCCESS_COUNT=0
+        TOTAL_ATTEMPTS=0
+        
+        case "$REGISTRY_TARGET" in
+          "npmjs")
+            TOTAL_ATTEMPTS=1
+            if publish_to_npmjs; then
+              SUCCESS_COUNT=1
+              PUBLISHED="true"
+            fi
+            ;;
+          "github")
+            TOTAL_ATTEMPTS=1
+            if publish_to_github; then
+              SUCCESS_COUNT=1
+              PUBLISHED="true"
+            fi
+            ;;
+          "both")
+            TOTAL_ATTEMPTS=2
+            if publish_to_npmjs; then
+              SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+              PUBLISHED="true"
+            fi
+            
+            if publish_to_github; then
+              SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+              PUBLISHED="true"
+            fi
+            ;;
+        esac
+        
+        echo "published=$PUBLISHED" >> $GITHUB_OUTPUT
+        
+        echo "📊 Publication Summary:"
+        echo "   Successfully published: $SUCCESS_COUNT/$TOTAL_ATTEMPTS registries"
+        
+        if [ "$SUCCESS_COUNT" -eq 0 ]; then
+          echo "❌ Failed to publish to any registry"
+          exit 1
+        elif [ "$SUCCESS_COUNT" -lt "$TOTAL_ATTEMPTS" ]; then
+          echo "⚠️  Some registries failed, but at least one succeeded"
+        else
+          echo "🎉 Published to all target registries successfully!"
+        fi
+
+    - name: Create Git Tag
+      if: steps.publish.outputs.published == 'true'
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        TAG="v$VERSION"
+        
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        if git tag -l "$TAG" | grep -q "^$TAG$"; then
+          echo "⚠️  Tag $TAG already exists, skipping tag creation"
+        else
+          git tag -a "$TAG" -m "Release version $VERSION"
+          git push origin "$TAG"
+          echo "✅ Created and pushed tag: $TAG"
+        fi
+
+    - name: Create GitHub Release
+      if: steps.publish.outputs.published == 'true'
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.version.outputs.version }}
+        release_name: Release v${{ steps.version.outputs.version }}
+        body: |
+          ## 🚀 Release v${{ steps.version.outputs.version }}
+          
+          ### 📦 Installation
+          ```bash
+          npm install @burgan-tech/vnext-template@${{ steps.version.outputs.version }}
+          ```
+          
+          ### 🔗 Package Links
+          - [NPM Package](https://www.npmjs.com/package/@burgan-tech/vnext-template)
+          - [GitHub Packages](https://github.com/${{ github.repository }}/packages)
+          
+          ### 📋 vNext Template Components
+          This package provides a structured template for vNext workflow components:
+          - Domain-based project structure
+          - Schema definitions and validation
+          - Workflow management
+          - Task definitions
+          - View components
+          - Function definitions
+          - Extension framework
+          
+          ### 📚 Usage
+          ```javascript
+          const vnextTemplate = require('@burgan-tech/vnext-template');
+          
+          // Get domain configuration
+          const config = vnextTemplate.getDomainConfig();
+          
+          // Get all schemas
+          const schemas = vnextTemplate.getSchemas();
+          
+          // Get workflows
+          const workflows = vnextTemplate.getWorkflows();
+          
+          // Get available component types
+          const types = vnextTemplate.getAvailableTypes();
+          ```
+          
+          ### 📋 Changes
+          See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed changes.
+          
+          ---
+          *This release was automatically created by GitHub Actions*
+        draft: false
+        prerelease: false
+
+    - name: Summary
+      if: always()
+      run: |
+        echo "## 📦 NPM Package Publishing Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Version Information" >> $GITHUB_STEP_SUMMARY
+        echo "- **Package**: \`@burgan-tech/vnext-template\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Version**: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Published**: ${{ steps.publish.outputs.published }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -n "${{ github.event.inputs.version_override }}" ]; then
+          echo "- **Version Override**: Used manual version override" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ github.event.inputs.force_publish }}" == "true" ]; then
+          echo "- **Force Publish**: Enabled" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        REGISTRY_TARGET="${{ github.event.inputs.registry_target || 'npmjs' }}"
+        echo "- **Target Registry**: $REGISTRY_TARGET" >> $GITHUB_STEP_SUMMARY
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📦 Package Information" >> $GITHUB_STEP_SUMMARY
+        echo "Structured template for vNext workflow components with domain-based architecture." >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ steps.publish.outputs.published }}" == "true" ]; then
+          echo "### 🎉 Published Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Installation Instructions" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "npm install @burgan-tech/vnext-template@${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "### ❌ Publication Failed" >> $GITHUB_STEP_SUMMARY
+          echo "The package was not successfully published. Check the workflow logs for details." >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🔗 Quick Links" >> $GITHUB_STEP_SUMMARY
+        echo "- [NPM Package](https://www.npmjs.com/package/@burgan-tech/vnext-template)" >> $GITHUB_STEP_SUMMARY
+        echo "- [GitHub Repository](https://github.com/${{ github.repository }})" >> $GITHUB_STEP_SUMMARY
+        echo "- [Workflow Artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
