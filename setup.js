@@ -185,9 +185,13 @@ function isInstalledAsDependency() {
   return cwd.includes('node_modules');
 }
 
-// Check if running in non-interactive environment (like npm install)
+// Check if running in non-interactive environment (like npm install or CI)
 function isNonInteractive() {
-  return !process.stdin.isTTY || process.env.CI === 'true' || process.env.NPM_CONFIG_INTERACTIVE === 'false';
+  return !process.stdin.isTTY || 
+         process.env.CI === 'true' || 
+         process.env.GITHUB_ACTIONS === 'true' ||
+         process.env.NPM_CONFIG_INTERACTIVE === 'false' ||
+         process.env.CI === '1';
 }
 
 // Get domain name from vnext.config.json
@@ -232,17 +236,33 @@ async function setup() {
     return;
   }
 
-  console.log('🚀 vNext Template Setup');
-  console.log('=======================\n');
-
   // Check if domain folder from vnext.config.json exists
   const domainFromConfig = getDomainFromConfig();
   if (domainFromConfig && isDomainFolderConfigured()) {
+    // In CI/non-interactive mode, skip silently
+    if (isNonInteractive()) {
+      return;
+    }
+    // In interactive mode, show message
+    console.log('🚀 vNext Template Setup');
+    console.log('=======================\n');
     console.log(`✅ Domain "${domainFromConfig}" is already configured`);
     console.log(`   Domain folder "${domainFromConfig}" exists and is set up.`);
     console.log('   Skipping setup. If you want to re-run setup, remove the domain directory first.\n');
     return;
   }
+
+  // In CI/non-interactive mode, if touch doesn't exist or not configured, skip silently
+  if (isNonInteractive()) {
+    if (!fs.existsSync('touch')) {
+      return;
+    }
+    // If touch exists but we're in CI, skip silently (don't prompt)
+    return;
+  }
+
+  console.log('🚀 vNext Template Setup');
+  console.log('=======================\n');
 
   // Check if already set up
   if (isAlreadySetup()) {
