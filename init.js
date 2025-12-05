@@ -20,7 +20,7 @@ function getPackageDir() {
   // If not found, try to find it relative to node_modules
   // This handles cases where npx creates a temporary directory
   const cwd = process.cwd();
-  const nodeModulesPath = path.join(cwd, 'node_modules', '@burgan-tech', 'vnext-template');
+  const nodeModulesPath = path.join(cwd, 'node_modules', '@burgan-tech', 'morph-touch');
   if (fs.existsSync(path.join(nodeModulesPath, 'touch'))) {
     return nodeModulesPath;
   }
@@ -104,8 +104,8 @@ function init() {
   const args = process.argv.slice(2);
   
   if (args.length === 0) {
-    console.error('❌ Usage: npx @burgan-tech/vnext-template <domain-name>');
-    console.error('   Example: npx @burgan-tech/vnext-template user-management');
+    console.error('❌ Usage: npx @burgan-tech/morph-touch <domain-name>');
+    console.error('   Example: npx @burgan-tech/morph-touch user-management');
     process.exit(1);
   }
   

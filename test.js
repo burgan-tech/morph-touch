@@ -3,8 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// Test script for vnext-template package
-console.log('🧪 Running vnext-template tests...');
+// Test script for morph-touch package
+console.log('🧪 Running morph-touch tests...');
 
 let testsPassed = 0;
 let testsFailed = 0;

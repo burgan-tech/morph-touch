@@ -1,5 +1,5 @@
 {
-  "name": "@burgan-tech/vnext-template",
+  "name": "@burgan-tech/morph-touch",
   "version": "1.0.0",
   "description": "vNext template package with domain-based workflow components and schema validation",
   "main": "index.js",
@@ -13,9 +13,9 @@
     "prepublishOnly": "npm run sync-schema && npm run validate"
   },
   "bin": {
-    "@burgan-tech/vnext-template": "./init.js",
-    "vnext-template": "./init.js",
-    "vnext-setup": "./setup.js"
+    "@burgan-tech/morph-touch": "./init.js",
+    "morph-touch": "./init.js",
+    "morph-touch-setup": "./setup.js"
   },
   "keywords": [
     "vnext",
@@ -30,12 +30,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/burgan-tech/vnext-template.git"
+    "url": "git+https://github.com/burgan-tech/morph-touch.git"
   },
   "bugs": {
-    "url": "https://github.com/burgan-tech/vnext-template/issues"
+    "url": "https://github.com/burgan-tech/morph-touch/issues"
   },
-  "homepage": "https://github.com/burgan-tech/vnext-template#readme",
+  "homepage": "https://github.com/burgan-tech/morph-touch#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
@@ -56,7 +56,7 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
- 
+    "@burgan-tech/vnext-schema": "^0.0.23"
   },
   "devDependencies": {
     "@burgan-tech/vnext-schema": "^0.0.23",
