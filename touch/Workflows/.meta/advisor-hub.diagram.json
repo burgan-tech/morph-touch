@@ -1,0 +1,32 @@
+{
+  "nodePos": {
+    "main": {
+      "x": 100,
+      "y": 500
+    },
+    "subflow-start-chat": {
+      "x": 356,
+      "y": 100
+    },
+    "subflow-rezervation": {
+      "x": 356,
+      "y": 300
+    },
+    "subflow-update-rezervation": {
+      "x": 496,
+      "y": 500
+    },
+    "subflow-past-conversations": {
+      "x": 356,
+      "y": 700
+    },
+    "subflow-risk-assessment": {
+      "x": 356,
+      "y": 900
+    },
+    "__start__": {
+      "x": -296,
+      "y": 500
+    }
+  }
+}

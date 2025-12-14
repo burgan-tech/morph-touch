@@ -1,0 +1,122 @@
+{
+  "key": "portfolio-manager",
+  "version": "1.0.0",
+  "domain": "touch",
+  "flow": "sys-schemas",
+  "flowVersion": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "schema",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://schemas.touch.domain/portfolio-manager",
+      "title": "Portfolio Manager",
+      "type": "object",
+      "description": "Portfolio Manager master schema",
+      "properties": {
+        "user": {
+          "type": "string",
+          "description": "Reference to User entity in different domain for portfolio manager's personal information (name, surname, phone, etc.) (format: domain:workflow:key or domain:workflow:id)"
+        },
+        "person": {
+          "type": "string",
+          "description": "Reference to Person entity in different domain for portfolio manager's personal information (format: domain:workflow:key or domain:workflow:id)"
+        },
+        "delegates": {
+          "type": "array",
+          "description": "Array of Portfolio Manager references who can respond on behalf when this manager is unavailable. System will automatically route requests to delegates when manager is offline, busy, on-vacation, or away.",
+          "items": {
+            "type": "string",
+            "description": "Reference to another Portfolio Manager (format: touch:portfolio-manager:key or touch:portfolio-manager:id)"
+          },
+          "uniqueItems": true
+        },
+        "timezone": {
+          "type": "string",
+          "description": "IANA timezone identifier (e.g., 'Europe/Istanbul', 'America/New_York')",
+          "pattern": "^[A-Za-z_]+/[A-Za-z_]+$"
+        },
+        "availableSlotDurations": {
+          "type": "array",
+          "description": "Available appointment slot durations in minutes (must be multiples of 15, e.g., 15, 30, 60)",
+          "items": {
+            "type": "integer",
+            "minimum": 15,
+            "multipleOf": 15,
+            "description": "Slot duration in minutes (must be a multiple of 15)"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "breakDurationBetweenAppointments": {
+          "type": "integer",
+          "description": "Break duration between two consecutive appointments in minutes (must be a multiple of 15, minimum 15)",
+          "minimum": 15,
+          "multipleOf": 15,
+          "default": 15
+        },
+        "workingHours": {
+          "type": "object",
+          "description": "Working hours for this portfolio manager",
+          "properties": {
+            "monday": {
+              "type": "string",
+              "description": "Working hours for Monday (e.g., '09:00-17:00' or 'closed')",
+              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+            },
+            "tuesday": {
+              "type": "string",
+              "description": "Working hours for Tuesday (e.g., '09:00-17:00' or 'closed')",
+              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+            },
+            "wednesday": {
+              "type": "string",
+              "description": "Working hours for Wednesday (e.g., '09:00-17:00' or 'closed')",
+              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+            },
+            "thursday": {
+              "type": "string",
+              "description": "Working hours for Thursday (e.g., '09:00-17:00' or 'closed')",
+              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+            },
+            "friday": {
+              "type": "string",
+              "description": "Working hours for Friday (e.g., '09:00-17:00' or 'closed')",
+              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+            },
+            "saturday": {
+              "type": "string",
+              "description": "Working hours for Saturday (e.g., '09:00-17:00' or 'closed')",
+              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+            },
+            "sunday": {
+              "type": "string",
+              "description": "Working hours for Sunday (e.g., '09:00-17:00' or 'closed')",
+              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+            }
+          },
+          "required": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          ]
+        }
+      },
+      "required": [
+        "user",
+        "person",
+        "timezone",
+        "availableSlotDurations",
+        "breakDurationBetweenAppointments",
+        "workingHours"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

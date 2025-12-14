@@ -1,0 +1,223 @@
+{
+  "key": "update-rezervation",
+  "flow": "sys-flows",
+  "domain": "touch",
+  "version": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "S",
+    "labels": [
+      {
+        "label": "Update Reservation",
+        "language": "en-US"
+      },
+      {
+        "label": "Randevu Güncelleme",
+        "language": "tr-TR"
+      }
+    ],
+    "functions": [],
+    "features": [],
+    "extensions": [],
+    "sharedTransitions": [],
+    "startTransition": {
+      "key": "start",
+      "target": "appointment-form",
+      "versionStrategy": "Major",
+      "triggerType": 0,
+      "labels": [
+        {
+          "label": "Start",
+          "language": "en-US"
+        },
+        {
+          "label": "Başla",
+          "language": "tr-TR"
+        }
+      ]
+    },
+    "states": [
+      {
+        "key": "appointment-form",
+        "stateType": 1,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Edit Appointment",
+            "language": "en-US"
+          },
+          {
+            "label": "Randevu Düzenle",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "confirm-selection",
+            "target": "confirmation",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Confirm",
+                "language": "en-US"
+              },
+              {
+                "label": "Onayla",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "cancel-request",
+            "target": "cancel-confirmation",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Cancel Appointment",
+                "language": "en-US"
+              },
+              {
+                "label": "Randevuyu İptal Et",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "confirmation",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Confirmation",
+            "language": "en-US"
+          },
+          {
+            "label": "Güncelleme Onayı",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "update-appointment",
+            "target": "success",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Update",
+                "language": "en-US"
+              },
+              {
+                "label": "Güncelle",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "back-to-form",
+            "target": "appointment-form",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Back",
+                "language": "en-US"
+              },
+              {
+                "label": "Geri",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "cancel-confirmation",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Cancel Confirmation",
+            "language": "en-US"
+          },
+          {
+            "label": "İptal Onayı",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "confirm-cancel",
+            "target": "cancelled",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Delete Appointment",
+                "language": "en-US"
+              },
+              {
+                "label": "Randevuyu Sil",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "back",
+            "target": "appointment-form",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Cancel",
+                "language": "en-US"
+              },
+              {
+                "label": "Vazgeç",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "success",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Appointment Updated",
+            "language": "en-US"
+          },
+          {
+            "label": "Randevu Güncellendi",
+            "language": "tr-TR"
+          }
+        ]
+      },
+      {
+        "key": "cancelled",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Appointment Cancelled",
+            "language": "en-US"
+          },
+          {
+            "label": "Randevu İptal Edildi",
+            "language": "tr-TR"
+          }
+        ]
+      }
+    ],
+    "subFlowType": "S",
+    "timeout": null
+  }
+}

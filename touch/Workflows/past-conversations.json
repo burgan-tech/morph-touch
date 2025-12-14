@@ -1,0 +1,112 @@
+{
+  "key": "past-conversations",
+  "flow": "sys-flows",
+  "domain": "touch",
+  "version": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "S",
+    "labels": [
+      {
+        "label": "Past Conversations",
+        "language": "en-US"
+      },
+      {
+        "label": "Geçmiş Görüşmeler",
+        "language": "tr-TR"
+      }
+    ],
+    "functions": [],
+    "features": [],
+    "extensions": [],
+    "sharedTransitions": [],
+    "startTransition": {
+      "key": "start",
+      "target": "list",
+      "versionStrategy": "Major",
+      "triggerType": 0,
+      "labels": [
+        {
+          "label": "Start",
+          "language": "en-US"
+        },
+        {
+          "label": "Başla",
+          "language": "tr-TR"
+        }
+      ]
+    },
+    "states": [
+      {
+        "key": "list",
+        "stateType": 1,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Conversation List",
+            "language": "en-US"
+          },
+          {
+            "label": "Görüşme Listesi",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "view-detail",
+            "target": "detail",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "View Detail",
+                "language": "en-US"
+              },
+              {
+                "label": "Detay Görüntüle",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "detail",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Conversation Detail",
+            "language": "en-US"
+          },
+          {
+            "label": "Görüşme Detayı",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "back-to-list",
+            "target": "list",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Back",
+                "language": "en-US"
+              },
+              {
+                "label": "Geri",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "subFlowType": "S",
+    "timeout": null
+  }
+}

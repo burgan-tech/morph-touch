@@ -1,0 +1,92 @@
+{
+  "key": "absence-entry",
+  "version": "1.0.0",
+  "domain": "touch",
+  "flow": "sys-schemas",
+  "flowVersion": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "schema",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://schemas.touch.domain/absence-entry",
+      "title": "Absence Entry",
+      "type": "object",
+      "description": "Absence entry schema for advisor's calendar (meetings, customer visits, vacations, etc.). Can be used for both Portfolio Manager and Investment Advisor.",
+      "properties": {
+        "advisor": {
+          "type": "string",
+          "description": "Reference to Advisor (Portfolio Manager or Investment Advisor) (format: touch:portfolio-manager:key, touch:portfolio-manager:id, touch:investment-advisor:key, or touch:investment-advisor:id)"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of absence entry",
+          "oneOf": [
+            {
+              "const": "meeting",
+              "description": "Internal or external meeting"
+            },
+            {
+              "const": "customer-visit",
+              "description": "Customer visit"
+            },
+            {
+              "const": "vacation",
+              "description": "Vacation or time off"
+            },
+            {
+              "const": "other",
+              "description": "Other type of absence"
+            }
+          ]
+        },
+        "startDateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start date and time of the absence (ISO 8601 format)"
+        },
+        "endDateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End date and time of the absence (ISO 8601 format)"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title or subject of the absence entry"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional description or notes"
+        },
+        "exchangeSync": {
+          "type": "object",
+          "description": "Exchange calendar synchronization information",
+          "properties": {
+            "synced": {
+              "type": "boolean",
+              "description": "Whether this entry is synced with Exchange calendar"
+            },
+            "exchangeId": {
+              "type": "string",
+              "description": "Exchange calendar event ID (if synced)"
+            }
+          },
+          "required": [
+            "synced"
+          ]
+        }
+      },
+      "required": [
+        "advisor",
+        "type",
+        "startDateTime",
+        "endDateTime",
+        "title"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
+

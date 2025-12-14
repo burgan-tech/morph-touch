@@ -1,0 +1,131 @@
+{
+  "key": "absence-entry",
+  "flow": "sys-flows",
+  "domain": "touch",
+  "version": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "S",
+    "labels": [
+      {
+        "label": "Absence Entry",
+        "language": "en-US"
+      },
+      {
+        "label": "Yokluk Kaydı",
+        "language": "tr-TR"
+      }
+    ],
+    "functions": [],
+    "features": [],
+    "extensions": [],
+    "sharedTransitions": [
+      {
+        "key": "cancel",
+        "target": "cancelled",
+        "triggerType": 0,
+        "versionStrategy": "Minor",
+        "availableIn": [
+          "draft",
+          "scheduled"
+        ],
+        "labels": [
+          {
+            "label": "Cancel",
+            "language": "en-US"
+          },
+          {
+            "label": "İptal Et",
+            "language": "tr-TR"
+          }
+        ]
+      }
+    ],
+    "startTransition": {
+      "key": "start",
+      "target": "draft",
+      "versionStrategy": "Major",
+      "triggerType": 0,
+      "labels": [
+        {
+          "label": "Start",
+          "language": "en-US"
+        },
+        {
+          "label": "Başla",
+          "language": "tr-TR"
+        }
+      ]
+    },
+    "states": [
+      {
+        "key": "draft",
+        "stateType": 1,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Draft",
+            "language": "en-US"
+          },
+          {
+            "label": "Taslak",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "schedule",
+            "target": "scheduled",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Schedule",
+                "language": "en-US"
+              },
+              {
+                "label": "Planla",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "scheduled",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Scheduled",
+            "language": "en-US"
+          },
+          {
+            "label": "Planlandı",
+            "language": "tr-TR"
+          }
+        ],
+        "_comment": "bu girdiler bu kaydin bagli oldugu kisinin randevu boslugunu hesaplamak icin kullanilir. buradaki kayitlar randevu verilemez kabul edilir."
+      },
+      {
+        "key": "cancelled",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Cancelled",
+            "language": "en-US"
+          },
+          {
+            "label": "İptal Edildi",
+            "language": "tr-TR"
+          }
+        ]
+      }
+    ],
+    "subFlowType": "S",
+    "timeout": null
+  }
+}

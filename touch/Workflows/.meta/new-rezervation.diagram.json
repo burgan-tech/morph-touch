@@ -1,0 +1,20 @@
+{
+  "nodePos": {
+    "appointment-form": {
+      "x": 386,
+      "y": 100
+    },
+    "confirmation": {
+      "x": 100,
+      "y": 300
+    },
+    "success": {
+      "x": 526,
+      "y": 300
+    },
+    "__start__": {
+      "x": -10,
+      "y": 100
+    }
+  }
+}

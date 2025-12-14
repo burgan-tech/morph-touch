@@ -1,0 +1,332 @@
+{
+  "key": "portfolio-manager",
+  "flow": "sys-flows",
+  "domain": "touch",
+  "version": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "S",
+    "labels": [
+      {
+        "label": "Portfolio Manager",
+        "language": "en-US"
+      },
+      {
+        "label": "Portföy Yöneticisi",
+        "language": "tr-TR"
+      }
+    ],
+    "functions": [],
+    "features": [],
+    "extensions": [],
+    "sharedTransitions": [
+      {
+        "key": "deactivate",
+        "target": "inactive",
+        "triggerType": 0,
+        "versionStrategy": "Minor",
+        "availableIn": [
+          "draft",
+          "online",
+          "offline",
+          "on-vacation",
+          "busy",
+          "away"
+        ],
+        "labels": [
+          {
+            "label": "Deactivate",
+            "language": "en-US"
+          },
+          {
+            "label": "Pasife Al",
+            "language": "tr-TR"
+          }
+        ]
+      }
+    ],
+    "startTransition": {
+      "key": "start",
+      "target": "draft",
+      "versionStrategy": "Major",
+      "triggerType": 0,
+      "labels": [
+        {
+          "label": "Start",
+          "language": "en-US"
+        },
+        {
+          "label": "Başla",
+          "language": "tr-TR"
+        }
+      ]
+    },
+    "states": [
+      {
+        "key": "draft",
+        "stateType": 1,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Draft",
+            "language": "en-US"
+          },
+          {
+            "label": "Taslak",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "activate",
+            "target": "online",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Activate",
+                "language": "en-US"
+              },
+              {
+                "label": "Aktifleştir",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "online",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Online",
+            "language": "en-US"
+          },
+          {
+            "label": "Çevrimiçi",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "go-offline",
+            "target": "offline",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Go Offline",
+                "language": "en-US"
+              },
+              {
+                "label": "Çevrimdışı Ol",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "start-vacation",
+            "target": "on-vacation",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Start Vacation",
+                "language": "en-US"
+              },
+              {
+                "label": "İzne Çık",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "go-busy",
+            "target": "busy",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Go Busy",
+                "language": "en-US"
+              },
+              {
+                "label": "Meşgul Ol",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "go-away",
+            "target": "away",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Go Away",
+                "language": "en-US"
+              },
+              {
+                "label": "Uzaklaş",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "offline",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Offline",
+            "language": "en-US"
+          },
+          {
+            "label": "Çevrimdışı",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "go-online",
+            "target": "online",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Go Online",
+                "language": "en-US"
+              },
+              {
+                "label": "Çevrimiçi Ol",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "on-vacation",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "On Vacation",
+            "language": "en-US"
+          },
+          {
+            "label": "İzinde",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "end-vacation",
+            "target": "online",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "End Vacation",
+                "language": "en-US"
+              },
+              {
+                "label": "İzni Bitir",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "busy",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Busy",
+            "language": "en-US"
+          },
+          {
+            "label": "Meşgul",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "available",
+            "target": "online",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Available",
+                "language": "en-US"
+              },
+              {
+                "label": "Müsait Ol",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "away",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Away",
+            "language": "en-US"
+          },
+          {
+            "label": "Uzakta",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "return",
+            "target": "online",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Return",
+                "language": "en-US"
+              },
+              {
+                "label": "Geri Dön",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "inactive",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Inactive",
+            "language": "en-US"
+          },
+          {
+            "label": "Pasif",
+            "language": "tr-TR"
+          }
+        ]
+      }
+    ],
+    "subFlowType": "S",
+    "timeout": null
+  }
+}

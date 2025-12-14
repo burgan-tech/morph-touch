@@ -1,0 +1,378 @@
+{
+  "key": "advisor-hub",
+  "flow": "sys-flows",
+  "domain": "touch",
+  "version": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "F",
+    "labels": [
+      {
+        "label": "Financial Advisors",
+        "language": "en-US"
+      },
+      {
+        "label": "Finansal Rehberler",
+        "language": "tr-TR"
+      }
+    ],
+    "functions": [],
+    "features": [],
+    "extensions": [],
+    "sharedTransitions": [],
+    "startTransition": {
+      "key": "start",
+      "target": "main",
+      "versionStrategy": "Major",
+      "triggerType": 0,
+      "labels": [
+        {
+          "label": "Start",
+          "language": "en-US"
+        },
+        {
+          "label": "Başla",
+          "language": "tr-TR"
+        }
+      ]
+    },
+    "states": [
+      {
+        "key": "main",
+        "stateType": 1,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Advisor List",
+            "language": "en-US"
+          },
+          {
+            "label": "Danışman Listesi",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "start-chat",
+            "target": "subflow-start-chat",
+            "versionStrategy": "Minor",
+            "triggerType": 0,
+            "labels": [
+              {
+                "label": "Message",
+                "language": "en-US"
+              },
+              {
+                "label": "Mesaj",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "new-reservation",
+            "target": "subflow-rezervation",
+            "versionStrategy": "Minor",
+            "triggerType": 0,
+            "labels": [
+              {
+                "label": "Book Appointment",
+                "language": "en-US"
+              },
+              {
+                "label": "Randevu Al",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "edit-reservation",
+            "target": "subflow-update-rezervation",
+            "versionStrategy": "Minor",
+            "triggerType": 0,
+            "labels": [
+              {
+                "label": "Edit Appointment",
+                "language": "en-US"
+              },
+              {
+                "label": "Randevuyu Düzenle",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "past-conversations",
+            "target": "subflow-past-conversations",
+            "versionStrategy": "Minor",
+            "triggerType": 0,
+            "labels": [
+              {
+                "label": "Past Conversations",
+                "language": "en-US"
+              },
+              {
+                "label": "Geçmiş Görüşmeler",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "complete-onboarding",
+            "target": "subflow-risk-assessment",
+            "versionStrategy": "Minor",
+            "triggerType": 0,
+            "labels": [
+              {
+                "label": "Complete",
+                "language": "en-US"
+              },
+              {
+                "label": "Tamamla",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "subflow-start-chat",
+        "stateType": 4,
+        "xProfile": "SubFlow",
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Start Chat",
+            "language": "en-US"
+          },
+          {
+            "label": "Mesaj Başlat",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "return-to-main",
+            "target": "main",
+            "versionStrategy": "Minor",
+            "triggerType": 1,
+            "labels": [
+              {
+                "label": "Return",
+                "language": "en-US"
+              },
+              {
+                "label": "Geri Dön",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ],
+        "subFlow": {
+          "type": "S",
+          "process": {
+            "key": "start-chat",
+            "domain": "touch",
+            "flow": "sys-flows",
+            "version": "1.0.0"
+          },
+          "mapping": {
+            "location": "",
+            "code": ""
+          }
+        }
+      },
+      {
+        "key": "subflow-rezervation",
+        "stateType": 4,
+        "xProfile": "SubFlow",
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "New Reservation",
+            "language": "en-US"
+          },
+          {
+            "label": "Yeni Rezervasyon",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "return-to-main",
+            "target": "main",
+            "versionStrategy": "Minor",
+            "triggerType": 1,
+            "labels": [
+              {
+                "label": "Return",
+                "language": "en-US"
+              },
+              {
+                "label": "Geri Dön",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ],
+        "subFlow": {
+          "type": "S",
+          "process": {
+            "key": "rezervation",
+            "domain": "touch",
+            "flow": "sys-flows",
+            "version": "1.0.0"
+          },
+          "mapping": {
+            "location": "",
+            "code": ""
+          }
+        }
+      },
+      {
+        "key": "subflow-update-rezervation",
+        "stateType": 4,
+        "xProfile": "SubFlow",
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Update Reservation",
+            "language": "en-US"
+          },
+          {
+            "label": "Rezervasyon Güncelle",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "return-to-main",
+            "target": "main",
+            "versionStrategy": "Minor",
+            "triggerType": 1,
+            "labels": [
+              {
+                "label": "Return",
+                "language": "en-US"
+              },
+              {
+                "label": "Geri Dön",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ],
+        "subFlow": {
+          "type": "S",
+          "process": {
+            "key": "update-rezervation",
+            "domain": "touch",
+            "flow": "sys-flows",
+            "version": "1.0.0"
+          },
+          "mapping": {
+            "location": "",
+            "code": ""
+          }
+        }
+      },
+      {
+        "key": "subflow-past-conversations",
+        "stateType": 4,
+        "xProfile": "SubFlow",
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Past Conversations",
+            "language": "en-US"
+          },
+          {
+            "label": "Geçmiş Görüşmeler",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "return-to-main",
+            "target": "main",
+            "versionStrategy": "Minor",
+            "triggerType": 1,
+            "labels": [
+              {
+                "label": "Return",
+                "language": "en-US"
+              },
+              {
+                "label": "Geri Dön",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ],
+        "subFlow": {
+          "type": "S",
+          "process": {
+            "key": "past-conversations",
+            "domain": "touch",
+            "flow": "sys-flows",
+            "version": "1.0.0"
+          },
+          "mapping": {
+            "location": "",
+            "code": ""
+          }
+        }
+      },
+      {
+        "key": "subflow-risk-assessment",
+        "stateType": 4,
+        "xProfile": "SubFlow",
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Risk Assessment",
+            "language": "en-US"
+          },
+          {
+            "label": "Risk Değerlendirmesi",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "return-to-main",
+            "target": "main",
+            "versionStrategy": "Minor",
+            "triggerType": 1,
+            "labels": [
+              {
+                "label": "Return",
+                "language": "en-US"
+              },
+              {
+                "label": "Geri Dön",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ],
+        "subFlow": {
+          "type": "S",
+          "process": {
+            "key": "risk-assessment",
+            "domain": "touch",
+            "flow": "sys-flows",
+            "version": "1.0.0"
+          },
+          "mapping": {
+            "location": "",
+            "code": ""
+          }
+        }
+      }
+    ],
+    "subFlowType": null,
+    "timeout": null
+  }
+}

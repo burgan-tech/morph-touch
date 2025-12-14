@@ -1,0 +1,125 @@
+{
+  "key": "risk-assessment",
+  "flow": "sys-flows",
+  "domain": "touch",
+  "version": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "S",
+    "labels": [
+      {
+        "label": "Risk Assessment",
+        "language": "en-US"
+      },
+      {
+        "label": "Risk Değerlendirmesi",
+        "language": "tr-TR"
+      }
+    ],
+    "functions": [],
+    "features": [],
+    "extensions": [],
+    "sharedTransitions": [],
+    "startTransition": {
+      "key": "start",
+      "target": "assessment-form",
+      "versionStrategy": "Major",
+      "triggerType": 0,
+      "labels": [
+        {
+          "label": "Start",
+          "language": "en-US"
+        },
+        {
+          "label": "Başla",
+          "language": "tr-TR"
+        }
+      ]
+    },
+    "states": [
+      {
+        "key": "assessment-form",
+        "stateType": 1,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Assessment Form",
+            "language": "en-US"
+          },
+          {
+            "label": "Değerlendirme Formu",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "submit",
+            "target": "completed",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Submit",
+                "language": "en-US"
+              },
+              {
+                "label": "Gönder",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "cancel",
+            "target": "cancelled",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Cancel",
+                "language": "en-US"
+              },
+              {
+                "label": "Vazgeç",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "completed",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Assessment Completed",
+            "language": "en-US"
+          },
+          {
+            "label": "Değerlendirme Tamamlandı",
+            "language": "tr-TR"
+          }
+        ]
+      },
+      {
+        "key": "cancelled",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Cancelled",
+            "language": "en-US"
+          },
+          {
+            "label": "İptal Edildi",
+            "language": "tr-TR"
+          }
+        ]
+      }
+    ],
+    "subFlowType": "S",
+    "timeout": null
+  }
+}

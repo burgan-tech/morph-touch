@@ -1,0 +1,158 @@
+{
+  "key": "start-chat",
+  "flow": "sys-flows",
+  "domain": "touch",
+  "version": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "S",
+    "labels": [
+      {
+        "label": "Start Chat",
+        "language": "en-US"
+      },
+      {
+        "label": "Mesaj Başlat",
+        "language": "tr-TR"
+      }
+    ],
+    "functions": [],
+    "features": [],
+    "extensions": [],
+    "sharedTransitions": [],
+    "startTransition": {
+      "key": "start",
+      "target": "chat-init",
+      "versionStrategy": "Major",
+      "triggerType": 0,
+      "labels": [
+        {
+          "label": "Start",
+          "language": "en-US"
+        },
+        {
+          "label": "Başla",
+          "language": "tr-TR"
+        }
+      ]
+    },
+    "states": [
+      {
+        "key": "chat-init",
+        "stateType": 1,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Initialize Chat",
+            "language": "en-US"
+          },
+          {
+            "label": "Sohbet Başlatılıyor",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "open-chat",
+            "target": "in-chat",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Open Chat",
+                "language": "en-US"
+              },
+              {
+                "label": "Sohbeti Aç",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "cancel",
+            "target": "cancelled",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Cancel",
+                "language": "en-US"
+              },
+              {
+                "label": "Vazgeç",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "in-chat",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "In Chat",
+            "language": "en-US"
+          },
+          {
+            "label": "Sohbette",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "close-chat",
+            "target": "chat-closed",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Close Chat",
+                "language": "en-US"
+              },
+              {
+                "label": "Sohbeti Kapat",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "chat-closed",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Chat Closed",
+            "language": "en-US"
+          },
+          {
+            "label": "Sohbet Kapatıldı",
+            "language": "tr-TR"
+          }
+        ]
+      },
+      {
+        "key": "cancelled",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Cancelled",
+            "language": "en-US"
+          },
+          {
+            "label": "İptal Edildi",
+            "language": "tr-TR"
+          }
+        ]
+      }
+    ],
+    "subFlowType": "S",
+    "timeout": null
+  }
+}

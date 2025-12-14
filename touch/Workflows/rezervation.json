@@ -1,0 +1,448 @@
+{
+  "key": "rezervation",
+  "flow": "sys-flows",
+  "domain": "touch",
+  "version": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "S",
+    "labels": [
+      {
+        "label": "Reservation",
+        "language": "en-US"
+      },
+      {
+        "label": "Randevu Alma",
+        "language": "tr-TR"
+      }
+    ],
+    "functions": [],
+    "features": [],
+    "extensions": [],
+    "sharedTransitions": [],
+    "startTransition": {
+      "key": "start",
+      "target": "appointment-form",
+      "versionStrategy": "Major",
+      "triggerType": 0,
+      "labels": [
+        {
+          "label": "Start",
+          "language": "en-US"
+        },
+        {
+          "label": "Başla",
+          "language": "tr-TR"
+        }
+      ]
+    },
+    "states": [
+      {
+        "key": "appointment-form",
+        "stateType": 1,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Book Appointment",
+            "language": "en-US"
+          },
+          {
+            "label": "Randevu Alma",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "confirm-selection",
+            "target": "confirmation",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Confirm",
+                "language": "en-US"
+              },
+              {
+                "label": "Onayla",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "confirmation",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Confirmation",
+            "language": "en-US"
+          },
+          {
+            "label": "Randevu Onayı",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "create-appointment",
+            "target": "active",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Confirm",
+                "language": "en-US"
+              },
+              {
+                "label": "Onayla",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "back-to-form",
+            "target": "appointment-form",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Back",
+                "language": "en-US"
+              },
+              {
+                "label": "Geri",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "active",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Active Appointment",
+            "language": "en-US"
+          },
+          {
+            "label": "Aktif Randevu",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "update",
+            "target": "active",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Update",
+                "language": "en-US"
+              },
+              {
+                "label": "Güncelle",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "user-cancel",
+            "target": "user-cancelled",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Cancel by User",
+                "language": "en-US"
+              },
+              {
+                "label": "Kullanıcı İptali",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "advisor-cancel",
+            "target": "advisor-cancelled",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Cancel by Advisor",
+                "language": "en-US"
+              },
+              {
+                "label": "Danışman İptali",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "timeout",
+            "target": "timeout",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Timeout",
+                "language": "en-US"
+              },
+              {
+                "label": "Zaman Aşımı",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "can-start",
+            "target": "can-start-meeting",
+            "triggerType": 1,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Meeting Available",
+                "language": "en-US"
+              },
+              {
+                "label": "Görüşme Başlatılabilir",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "can-start-meeting",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Ready to Start Meeting",
+            "language": "en-US"
+          },
+          {
+            "label": "Görüşmeye Hazır",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "start-meeting",
+            "target": "accept-terms",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Start Meeting",
+                "language": "en-US"
+              },
+              {
+                "label": "Görüşmeyi Başlat",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "user-cancel",
+            "target": "user-cancelled",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Cancel by User",
+                "language": "en-US"
+              },
+              {
+                "label": "Kullanıcı İptali",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "advisor-cancel",
+            "target": "advisor-cancelled",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Cancel by Advisor",
+                "language": "en-US"
+              },
+              {
+                "label": "Danışman İptali",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "timeout",
+            "target": "timeout",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Timeout",
+                "language": "en-US"
+              },
+              {
+                "label": "Zaman Aşımı",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "accept-terms",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Accept Terms",
+            "language": "en-US"
+          },
+          {
+            "label": "Şartları Kabul Et",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "accept",
+            "target": "in-meet",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Accept & Join",
+                "language": "en-US"
+              },
+              {
+                "label": "Kabul Et ve Katıl",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "decline",
+            "target": "can-start-meeting",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Decline",
+                "language": "en-US"
+              },
+              {
+                "label": "Vazgeç",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "in-meet",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "In Meeting",
+            "language": "en-US"
+          },
+          {
+            "label": "Görüşmede",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "end-meeting",
+            "target": "meet-completed",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "End Meeting",
+                "language": "en-US"
+              },
+              {
+                "label": "Görüşmeyi Bitir",
+                "language": "tr-TR"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "meet-completed",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Meeting Completed",
+            "language": "en-US"
+          },
+          {
+            "label": "Görüşme Tamamlandı",
+            "language": "tr-TR"
+          }
+        ]
+      },
+      {
+        "key": "user-cancelled",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Cancelled by User",
+            "language": "en-US"
+          },
+          {
+            "label": "Kullanıcı Tarafından İptal Edildi",
+            "language": "tr-TR"
+          }
+        ]
+      },
+      {
+        "key": "advisor-cancelled",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Cancelled by Advisor",
+            "language": "en-US"
+          },
+          {
+            "label": "Danışman Tarafından İptal Edildi",
+            "language": "tr-TR"
+          }
+        ]
+      },
+      {
+        "key": "timeout",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Timeout",
+            "language": "en-US"
+          },
+          {
+            "label": "Zaman Aşımı",
+            "language": "tr-TR"
+          }
+        ]
+      }
+    ],
+    "subFlowType": "S",
+    "timeout": null
+  }
+}
