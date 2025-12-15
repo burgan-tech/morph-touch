@@ -1,0 +1,91 @@
+{
+  "key": "rezervation",
+  "version": "1.0.0",
+  "domain": "touch",
+  "flow": "sys-schemas",
+  "flowVersion": "1.0.0",
+  "tags": [
+    "new"
+  ],
+  "attributes": {
+    "type": "schema",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://schemas.touch.domain/rezervation",
+      "title": "Reservation",
+      "type": "object",
+      "description": "Reservation schema for appointments between customers and advisors (Portfolio Manager or Investment Advisor)",
+      "properties": {
+        "user": {
+          "type": "string",
+          "description": "Reference to User entity (customer) in different domain (format: domain:workflow:key or domain:workflow:id)"
+        },
+        "advisor": {
+          "type": "string",
+          "description": "Reference to Advisor (Portfolio Manager or Investment Advisor) (format: touch:portfolio-manager:key, touch:portfolio-manager:id, touch:investment-advisor:key, or touch:investment-advisor:id)"
+        },
+        "startDateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start date and time of the appointment (ISO 8601 format)"
+        },
+        "endDateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End date and time of the appointment (ISO 8601 format)"
+        },
+        "webrtcIntegration": {
+          "type": "object",
+          "description": "WebRTC video call integration information (e.g., LiveKit, Jitsi, etc.)",
+          "properties": {
+            "roomName": {
+              "type": "string",
+              "description": "Video call room name for the meeting"
+            },
+            "roomId": {
+              "type": "string",
+              "description": "Video call room ID for the meeting"
+            },
+            "created": {
+              "type": "boolean",
+              "description": "Whether the video call room has been created"
+            }
+          },
+          "required": [
+            "created"
+          ]
+        },
+        "chatIntegration": {
+          "type": "object",
+          "description": "Chat integration information for this meeting (e.g., Synapse/Matrix, Slack, etc.)",
+          "properties": {
+            "roomId": {
+              "type": "string",
+              "description": "Chat room ID (e.g., Matrix room ID)"
+            },
+            "sessionStartMarker": {
+              "type": "string",
+              "description": "Session start marker event ID (for daily session grouping)"
+            },
+            "sessionEndMarker": {
+              "type": "string",
+              "description": "Session end marker event ID (if session is closed)"
+            }
+          }
+        },
+        "cancellationReason": {
+          "type": "string",
+          "description": "Reason for cancellation (if appointment was cancelled by user or advisor)"
+        }
+      },
+      "required": [
+        "user",
+        "advisor",
+        "startDateTime",
+        "endDateTime"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
+
