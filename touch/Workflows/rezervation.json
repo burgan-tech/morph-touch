@@ -70,7 +70,8 @@
               }
             ]
           }
-        ]
+        ],
+        "_comment": "## State Overview\n\n**Purpose:** Rezervasyon temel bilgilerini girmek icin kullanilir.\n\n* Tarih :  Rezervasyon Tarihi\n* Saat : Rezervasyon Saati"
       },
       {
         "key": "confirmation",
