@@ -172,7 +172,7 @@
             "key": "return-to-card",
             "target": "card-view",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",
@@ -219,7 +219,7 @@
             "key": "return-to-card",
             "target": "card-view",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",
@@ -266,7 +266,7 @@
             "key": "return-to-card",
             "target": "card-view",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",
@@ -313,7 +313,7 @@
             "key": "return-to-card",
             "target": "card-view",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",
@@ -360,7 +360,7 @@
             "key": "return-to-card",
             "target": "card-view",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",
@@ -407,7 +407,7 @@
             "key": "return-to-card",
             "target": "card-view",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",

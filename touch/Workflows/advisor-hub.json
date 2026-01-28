@@ -156,7 +156,7 @@
             "key": "return-to-main",
             "target": "main",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",
@@ -203,7 +203,7 @@
             "key": "return-to-main",
             "target": "main",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",
@@ -250,7 +250,7 @@
             "key": "return-to-main",
             "target": "main",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",
@@ -297,7 +297,7 @@
             "key": "return-to-main",
             "target": "main",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",
@@ -344,7 +344,7 @@
             "key": "return-to-main",
             "target": "main",
             "versionStrategy": "Minor",
-            "triggerType": 1,
+            "triggerType": 0,
             "labels": [
               {
                 "label": "Return",

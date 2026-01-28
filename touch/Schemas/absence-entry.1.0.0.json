@@ -14,15 +14,61 @@
       "$id": "https://schemas.touch.domain/absence-entry",
       "title": "Absence Entry",
       "type": "object",
-      "description": "Absence entry schema for advisor's calendar (meetings, customer visits, vacations, etc.). Can be used for both Portfolio Manager and Investment Advisor.",
+      "description": "Absence entry schema for advisor's calendar. Supports personal leave, working hours changes, and public holidays.",
       "properties": {
         "advisor": {
           "type": "string",
-          "description": "Reference to Advisor (Portfolio Manager or Investment Advisor) (format: touch:portfolio-manager:key, touch:portfolio-manager:id, touch:investment-advisor:key, or touch:investment-advisor:id)"
+          "description": "Reference to Advisor (Portfolio Manager or Investment Advisor). Required for personal-leave and working-hours-change types. Null for public-holiday type. (format: touch:portfolio-manager:key, touch:portfolio-manager:id, touch:investment-advisor:key, or touch:investment-advisor:id)"
+        },
+        "absenceType": {
+          "type": "string",
+          "description": "Main category of absence entry",
+          "oneOf": [
+            {
+              "const": "personal-leave",
+              "description": "Personal leave for a specific advisor (vacation, sick leave, meeting, etc.)"
+            },
+            {
+              "const": "working-hours-change",
+              "description": "Temporary or permanent change to advisor's working hours"
+            },
+            {
+              "const": "public-holiday",
+              "description": "Public holiday that affects all advisors in the domain"
+            }
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "description": "Scope of the absence entry - who is affected",
+          "oneOf": [
+            {
+              "const": "individual",
+              "description": "Affects only the specified advisor"
+            },
+            {
+              "const": "all-advisors",
+              "description": "Affects all advisors in the domain (e.g., public holidays)"
+            }
+          ]
+        },
+        "entryMode": {
+          "type": "string",
+          "description": "How the absence is defined - full day or specific time range",
+          "oneOf": [
+            {
+              "const": "full-day",
+              "description": "Absence covers the entire working day(s)"
+            },
+            {
+              "const": "time-range",
+              "description": "Absence covers specific hours within a day"
+            }
+          ]
         },
         "type": {
           "type": "string",
-          "description": "Type of absence entry",
+          "description": "Detailed type of absence (applicable for personal-leave)",
           "oneOf": [
             {
               "const": "meeting",
@@ -34,7 +80,15 @@
             },
             {
               "const": "vacation",
-              "description": "Vacation or time off"
+              "description": "Vacation or annual leave"
+            },
+            {
+              "const": "sick-leave",
+              "description": "Sick leave or medical absence"
+            },
+            {
+              "const": "training",
+              "description": "Training or professional development"
             },
             {
               "const": "other",
@@ -42,15 +96,25 @@
             }
           ]
         },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "Start date of the absence (ISO 8601 date format: YYYY-MM-DD). Used for full-day entries."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "End date of the absence (ISO 8601 date format: YYYY-MM-DD). Used for full-day entries."
+        },
         "startDateTime": {
           "type": "string",
           "format": "date-time",
-          "description": "Start date and time of the absence (ISO 8601 format)"
+          "description": "Start date and time of the absence (ISO 8601 format). Used for time-range entries."
         },
         "endDateTime": {
           "type": "string",
           "format": "date-time",
-          "description": "End date and time of the absence (ISO 8601 format)"
+          "description": "End date and time of the absence (ISO 8601 format). Used for time-range entries."
         },
         "title": {
           "type": "string",
@@ -59,6 +123,108 @@
         "description": {
           "type": "string",
           "description": "Optional description or notes"
+        },
+        "customWorkingHours": {
+          "type": "object",
+          "description": "Custom working hours configuration. Used when absenceType is 'working-hours-change'.",
+          "properties": {
+            "effectiveFrom": {
+              "type": "string",
+              "format": "date",
+              "description": "Date from which the custom working hours become effective"
+            },
+            "effectiveTo": {
+              "type": "string",
+              "format": "date",
+              "description": "Date until which the custom working hours are effective. Null for permanent changes."
+            },
+            "monday": {
+              "type": "array",
+              "description": "Working hours for Monday",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
+            },
+            "tuesday": {
+              "type": "array",
+              "description": "Working hours for Tuesday",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
+            },
+            "wednesday": {
+              "type": "array",
+              "description": "Working hours for Wednesday",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
+            },
+            "thursday": {
+              "type": "array",
+              "description": "Working hours for Thursday",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
+            },
+            "friday": {
+              "type": "array",
+              "description": "Working hours for Friday",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
+            },
+            "saturday": {
+              "type": "array",
+              "description": "Working hours for Saturday",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
+            },
+            "sunday": {
+              "type": "array",
+              "description": "Working hours for Sunday",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
+            }
+          },
+          "required": [
+            "effectiveFrom",
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          ]
+        },
+        "recurrence": {
+          "type": "object",
+          "description": "Recurrence pattern for repeating absences (e.g., yearly public holidays)",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "oneOf": [
+                {
+                  "const": "none",
+                  "description": "No recurrence - one-time entry"
+                },
+                {
+                  "const": "yearly",
+                  "description": "Repeats every year on the same date"
+                }
+              ]
+            },
+            "endRecurrence": {
+              "type": "string",
+              "format": "date",
+              "description": "Date when the recurrence ends. Null for indefinite recurrence."
+            }
+          },
+          "required": [
+            "pattern"
+          ]
         },
         "exchangeSync": {
           "type": "object",
@@ -78,15 +244,97 @@
           ]
         }
       },
+      "$defs": {
+        "timeRange": {
+          "type": "object",
+          "description": "A time range within a day",
+          "properties": {
+            "start": {
+              "type": "string",
+              "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Start time in HH:mm format (e.g., '09:00')"
+            },
+            "end": {
+              "type": "string",
+              "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "End time in HH:mm format (e.g., '18:00')"
+            }
+          },
+          "required": [
+            "start",
+            "end"
+          ]
+        }
+      },
       "required": [
-        "advisor",
-        "type",
-        "startDateTime",
-        "endDateTime",
+        "absenceType",
+        "scope",
+        "entryMode",
         "title"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "absenceType": {
+                "const": "personal-leave"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "advisor",
+              "type"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "absenceType": {
+                "const": "working-hours-change"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "advisor",
+              "customWorkingHours"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "entryMode": {
+                "const": "full-day"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "startDate",
+              "endDate"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "entryMode": {
+                "const": "time-range"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "startDateTime",
+              "endDateTime"
+            ]
+          }
+        }
       ],
       "additionalProperties": false
     }
   }
 }
-

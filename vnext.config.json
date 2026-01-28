@@ -2,8 +2,8 @@
   "version": "1.0.0",
   "description": "touch Domain Definition Configuration",
   "domain": "touch",
-  "runtimeVersion": "0.0.12",
-  "schemaVersion": "0.0.23",
+  "runtimeVersion": "0.0.31",
+  "schemaVersion": "0.0.32",
   "paths": {
     "componentsRoot": "touch",
     "tasks": "Tasks",

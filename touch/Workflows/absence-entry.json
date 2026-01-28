@@ -29,7 +29,8 @@
         "versionStrategy": "Minor",
         "availableIn": [
           "draft",
-          "scheduled"
+          "scheduled",
+          "active"
         ],
         "labels": [
           {
@@ -89,7 +90,25 @@
                 "label": "Planla",
                 "language": "tr-TR"
               }
-            ]
+            ],
+            "_comment": "Used for personal-leave and public-holiday types with future dates"
+          },
+          {
+            "key": "activate",
+            "target": "active",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Activate",
+                "language": "en-US"
+              },
+              {
+                "label": "Aktifleştir",
+                "language": "tr-TR"
+              }
+            ],
+            "_comment": "Used for working-hours-change type to activate custom working hours immediately"
           }
         ]
       },
@@ -107,7 +126,154 @@
             "language": "tr-TR"
           }
         ],
-        "_comment": "bu girdiler bu kaydin bagli oldugu kisinin randevu boslugunu hesaplamak icin kullanilir. buradaki kayitlar randevu verilemez kabul edilir."
+        "transitions": [
+          {
+            "key": "update",
+            "target": "scheduled",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Update",
+                "language": "en-US"
+              },
+              {
+                "label": "Güncelle",
+                "language": "tr-TR"
+              }
+            ]
+          },
+          {
+            "key": "complete",
+            "target": "completed",
+            "triggerType": 1,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Complete",
+                "language": "en-US"
+              },
+              {
+                "label": "Tamamla",
+                "language": "tr-TR"
+              }
+            ],
+            "rule": {
+              "type": "expression",
+              "expression": {
+                "or": [
+                  {
+                    "and": [
+                      {"eq": ["$.attributes.entryMode", "full-day"]},
+                      {"lt": ["$.attributes.endDate", "$now"]}
+                    ]
+                  },
+                  {
+                    "and": [
+                      {"eq": ["$.attributes.entryMode", "time-range"]},
+                      {"lt": ["$.attributes.endDateTime", "$now"]}
+                    ]
+                  }
+                ]
+              },
+              "description": "Auto-triggered when the absence end date/time has passed"
+            }
+          }
+        ],
+        "_comment": "These entries are used to calculate appointment availability. Records in this state are considered unavailable for appointments."
+      },
+      {
+        "key": "active",
+        "stateType": 2,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Active",
+            "language": "en-US"
+          },
+          {
+            "label": "Aktif",
+            "language": "tr-TR"
+          }
+        ],
+        "transitions": [
+          {
+            "key": "update",
+            "target": "active",
+            "triggerType": 0,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Update",
+                "language": "en-US"
+              },
+              {
+                "label": "Güncelle",
+                "language": "tr-TR"
+              }
+            ],
+            "_comment": "Used to update working hours configuration"
+          },
+          {
+            "key": "expire",
+            "target": "expired",
+            "triggerType": 1,
+            "versionStrategy": "Minor",
+            "labels": [
+              {
+                "label": "Expire",
+                "language": "en-US"
+              },
+              {
+                "label": "Süresi Dol",
+                "language": "tr-TR"
+              }
+            ],
+            "rule": {
+              "type": "expression",
+              "expression": {
+                "and": [
+                  {"ne": ["$.attributes.customWorkingHours.effectiveTo", null]},
+                  {"lt": ["$.attributes.customWorkingHours.effectiveTo", "$now"]}
+                ]
+              },
+              "description": "Auto-triggered when effectiveTo date is reached for temporary working hours changes. Permanent changes (effectiveTo=null) never expire."
+            }
+          }
+        ],
+        "_comment": "Active state for working-hours-change type. Custom working hours are effective while in this state."
+      },
+      {
+        "key": "completed",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Completed",
+            "language": "en-US"
+          },
+          {
+            "label": "Tamamlandı",
+            "language": "tr-TR"
+          }
+        ],
+        "_comment": "Final state when absence period has ended normally"
+      },
+      {
+        "key": "expired",
+        "stateType": 3,
+        "versionStrategy": "Minor",
+        "labels": [
+          {
+            "label": "Expired",
+            "language": "en-US"
+          },
+          {
+            "label": "Süresi Doldu",
+            "language": "tr-TR"
+          }
+        ],
+        "_comment": "Final state for temporary working hours changes that have expired"
       },
       {
         "key": "cancelled",

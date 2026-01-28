@@ -1,0 +1,1143 @@
+{
+  "info": {
+    "_postman_id": "touch-domain-collection",
+    "name": "vNext Touch Domain",
+    "description": "Postman collection for testing Touch domain workflows and functions.\n\n## Workflows\n- **Absence Entry**: Personal leave, working hours changes, public holidays\n\n## Functions\n- **Get Available Slots**: Calculate available appointment slots for advisors (GET with query parameters)\n\n## References\n- [Instance Filtering](https://github.com/burgan-tech/vnext-runtime/blob/main/doc/tr/flow/instance-filtering.md)\n- [GetInstanceDataTask](https://github.com/burgan-tech/vnext-runtime/blob/main/doc/en/flow/tasks/trigger-task.md#3-getinstancedatatask-type-13)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4201",
+      "type": "string"
+    },
+    {
+      "key": "apiVersion",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "domain",
+      "value": "touch",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Absence Entry Workflow",
+      "description": "Absence entry workflow for managing personal leaves, working hours changes, and public holidays.",
+      "item": [
+        {
+          "name": "Personal Leave",
+          "item": [
+            {
+              "name": "Start Personal Leave (Full Day - Vacation)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "tr-TR"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"personal-leave-{{$timestamp}}\",\n  \"tags\": [\n    \"personal-leave\",\n    \"vacation\",\n    \"full-day\"\n  ],\n  \"attributes\": {\n    \"advisor\": \"touch:portfolio-manager:pm-001\",\n    \"absenceType\": \"personal-leave\",\n    \"scope\": \"individual\",\n    \"entryMode\": \"full-day\",\n    \"type\": \"vacation\",\n    \"startDate\": \"2026-02-10\",\n    \"endDate\": \"2026-02-14\",\n    \"title\": \"Yıllık İzin\",\n    \"description\": \"Tatil için yıllık izin\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/start?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "start"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Start Personal Leave (Time Range - Meeting)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "tr-TR"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"meeting-{{$timestamp}}\",\n  \"tags\": [\n    \"personal-leave\",\n    \"meeting\",\n    \"time-range\"\n  ],\n  \"attributes\": {\n    \"advisor\": \"touch:portfolio-manager:pm-001\",\n    \"absenceType\": \"personal-leave\",\n    \"scope\": \"individual\",\n    \"entryMode\": \"time-range\",\n    \"type\": \"meeting\",\n    \"startDateTime\": \"2026-01-28T14:00:00\",\n    \"endDateTime\": \"2026-01-28T16:30:00\",\n    \"title\": \"Müşteri Toplantısı\",\n    \"description\": \"XYZ şirketi ile yatırım görüşmesi\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/start?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "start"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Schedule Personal Leave",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": {}\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/{{instanceKey}}/transitions/schedule?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "{{instanceKey}}", "transitions", "schedule"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update Personal Leave",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": {\n    \"endDate\": \"2026-02-15\",\n    \"description\": \"Tatil için yıllık izin - 1 gün uzatıldı\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/{{instanceKey}}/transitions/update?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "{{instanceKey}}", "transitions", "update"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Public Holiday",
+          "item": [
+            {
+              "name": "Start Public Holiday",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "tr-TR"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"public-holiday-{{$timestamp}}\",\n  \"tags\": [\n    \"public-holiday\",\n    \"national\"\n  ],\n  \"attributes\": {\n    \"advisor\": null,\n    \"absenceType\": \"public-holiday\",\n    \"scope\": \"all-advisors\",\n    \"entryMode\": \"full-day\",\n    \"startDate\": \"2026-04-23\",\n    \"endDate\": \"2026-04-23\",\n    \"title\": \"23 Nisan Ulusal Egemenlik ve Çocuk Bayramı\",\n    \"description\": \"Resmi tatil - Tüm danışmanları etkiler\",\n    \"recurrence\": {\n      \"pattern\": \"yearly\",\n      \"endRecurrence\": null\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/start?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "start"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Schedule Public Holiday",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": {}\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/{{instanceKey}}/transitions/schedule?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "{{instanceKey}}", "transitions", "schedule"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Query All Public Holidays",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/functions/data?filter={\"status\":{\"eq\":\"Active\"},\"attributes\":{\"absenceType\":{\"eq\":\"public-holiday\"},\"scope\":{\"eq\":\"all-advisors\"}}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "functions", "data"],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "{\"status\":{\"eq\":\"Active\"},\"attributes\":{\"absenceType\":{\"eq\":\"public-holiday\"},\"scope\":{\"eq\":\"all-advisors\"}}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Working Hours Change",
+          "item": [
+            {
+              "name": "Start Working Hours Change (Temporary)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "tr-TR"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"working-hours-{{$timestamp}}\",\n  \"tags\": [\n    \"working-hours-change\",\n    \"temporary\"\n  ],\n  \"attributes\": {\n    \"advisor\": \"touch:portfolio-manager:pm-002\",\n    \"absenceType\": \"working-hours-change\",\n    \"scope\": \"individual\",\n    \"entryMode\": \"full-day\",\n    \"title\": \"Geçici Çalışma Saati Değişikliği\",\n    \"description\": \"Şubat ayı için öğleden sonra çalışma\",\n    \"customWorkingHours\": {\n      \"effectiveFrom\": \"2026-02-01\",\n      \"effectiveTo\": \"2026-02-28\",\n      \"monday\": [\n        {\"start\": \"10:00\", \"end\": \"12:00\"},\n        {\"start\": \"13:00\", \"end\": \"19:00\"}\n      ],\n      \"tuesday\": [\n        {\"start\": \"10:00\", \"end\": \"12:00\"},\n        {\"start\": \"13:00\", \"end\": \"19:00\"}\n      ],\n      \"wednesday\": [\n        {\"start\": \"10:00\", \"end\": \"12:00\"},\n        {\"start\": \"13:00\", \"end\": \"19:00\"}\n      ],\n      \"thursday\": [\n        {\"start\": \"10:00\", \"end\": \"12:00\"},\n        {\"start\": \"13:00\", \"end\": \"19:00\"}\n      ],\n      \"friday\": [\n        {\"start\": \"10:00\", \"end\": \"12:00\"},\n        {\"start\": \"13:00\", \"end\": \"17:00\"}\n      ],\n      \"saturday\": [],\n      \"sunday\": []\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/start?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "start"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Start Working Hours Change (Permanent)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept-Language",
+                    "value": "tr-TR"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"key\": \"working-hours-perm-{{$timestamp}}\",\n  \"tags\": [\n    \"working-hours-change\",\n    \"permanent\"\n  ],\n  \"attributes\": {\n    \"advisor\": \"touch:portfolio-manager:pm-003\",\n    \"absenceType\": \"working-hours-change\",\n    \"scope\": \"individual\",\n    \"entryMode\": \"full-day\",\n    \"title\": \"Kalıcı Çalışma Saati Değişikliği\",\n    \"description\": \"Yarı zamanlı çalışma düzenine geçiş\",\n    \"customWorkingHours\": {\n      \"effectiveFrom\": \"2026-02-01\",\n      \"effectiveTo\": null,\n      \"monday\": [{\"start\": \"09:00\", \"end\": \"13:00\"}],\n      \"tuesday\": [{\"start\": \"09:00\", \"end\": \"13:00\"}],\n      \"wednesday\": [{\"start\": \"09:00\", \"end\": \"13:00\"}],\n      \"thursday\": [{\"start\": \"09:00\", \"end\": \"13:00\"}],\n      \"friday\": [{\"start\": \"09:00\", \"end\": \"13:00\"}],\n      \"saturday\": [],\n      \"sunday\": []\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/start?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "start"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Activate Working Hours",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": {}\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/{{instanceKey}}/transitions/activate?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "{{instanceKey}}", "transitions", "activate"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Update Working Hours",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": {\n    \"customWorkingHours\": {\n      \"effectiveFrom\": \"2026-02-01\",\n      \"effectiveTo\": \"2026-03-15\",\n      \"monday\": [\n        {\"start\": \"10:00\", \"end\": \"12:00\"},\n        {\"start\": \"13:00\", \"end\": \"19:00\"}\n      ],\n      \"tuesday\": [\n        {\"start\": \"10:00\", \"end\": \"12:00\"},\n        {\"start\": \"13:00\", \"end\": \"19:00\"}\n      ],\n      \"wednesday\": [\n        {\"start\": \"10:00\", \"end\": \"12:00\"},\n        {\"start\": \"13:00\", \"end\": \"19:00\"}\n      ],\n      \"thursday\": [\n        {\"start\": \"10:00\", \"end\": \"12:00\"},\n        {\"start\": \"13:00\", \"end\": \"19:00\"}\n      ],\n      \"friday\": [\n        {\"start\": \"10:00\", \"end\": \"12:00\"},\n        {\"start\": \"13:00\", \"end\": \"17:00\"}\n      ],\n      \"saturday\": [],\n      \"sunday\": []\n    },\n    \"description\": \"Şubat-Mart ayları için - Süre uzatıldı\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/{{instanceKey}}/transitions/update?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "{{instanceKey}}", "transitions", "update"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Common Operations",
+          "item": [
+            {
+              "name": "Get Instance State",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/{{instanceKey}}/functions/state",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "{{instanceKey}}", "functions", "state"]
+                }
+              }
+            },
+            {
+              "name": "Get Instance Data",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/{{instanceKey}}/functions/data",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "{{instanceKey}}", "functions", "data"]
+                }
+              }
+            },
+            {
+              "name": "Cancel Entry",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": {}\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/instances/{{instanceKey}}/transitions/cancel?sync=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "instances", "{{instanceKey}}", "transitions", "cancel"],
+                  "query": [
+                    {
+                      "key": "sync",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Query Active Absences for Advisor",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/functions/data?filter={\"status\":{\"eq\":\"Active\"},\"currentState\":{\"in\":[\"scheduled\",\"active\"]},\"attributes\":{\"advisor\":{\"eq\":\"touch:portfolio-manager:pm-001\"}}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "functions", "data"],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "{\"status\":{\"eq\":\"Active\"},\"currentState\":{\"in\":[\"scheduled\",\"active\"]},\"attributes\":{\"advisor\":{\"eq\":\"touch:portfolio-manager:pm-001\"}}}"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Query Absences by Date Range",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/workflows/absence-entry/functions/data?filter={\"status\":{\"eq\":\"Active\"},\"attributes\":{\"startDate\":{\"ge\":\"2026-02-01\"},\"endDate\":{\"le\":\"2026-02-28\"}}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "workflows", "absence-entry", "functions", "data"],
+                  "query": [
+                    {
+                      "key": "filter",
+                      "value": "{\"status\":{\"eq\":\"Active\"},\"attributes\":{\"startDate\":{\"ge\":\"2026-02-01\"},\"endDate\":{\"le\":\"2026-02-28\"}}}"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Get Available Slots Function",
+      "description": "Function to calculate available appointment slots for advisors based on working hours, absences, and existing appointments.\n\n**Method:** GET with query parameters\n\n**Parameters:**\n- advisorId (required): Advisor reference\n- date (required): Date in YYYY-MM-DD format\n- duration (optional): Slot duration in minutes (default: 30)",
+      "item": [
+        {
+          "name": "Normal Working Day",
+          "item": [
+            {
+              "name": "Get Slots - Monday (30min)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-02-02&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-02"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Slots - Tuesday (60min)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-02-03&duration=60",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-03"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "60"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Slots - Default Duration",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-02-04",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-04"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Weekend (Closed)",
+          "item": [
+            {
+              "name": "Get Slots - Saturday",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-02-07&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-07"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Slots - Sunday",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-02-08&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-08"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Public Holiday",
+          "item": [
+            {
+              "name": "Get Slots - Holiday (23 Nisan)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-04-23&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-04-23"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Custom Working Hours",
+          "item": [
+            {
+              "name": "Get Slots - Advisor with Custom Hours",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-002&date=2026-02-02&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-002"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-02"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Personal Leave",
+          "item": [
+            {
+              "name": "Get Slots - Full Day Leave",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-02-10&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-10"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Slots - Partial Leave (Meeting)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-01-28&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-01-28"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Different Slot Durations",
+          "item": [
+            {
+              "name": "Get Slots - 15 Minutes",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-02-05&duration=15",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-05"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "15"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Slots - 45 Minutes",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-02-05&duration=45",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-05"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "45"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Slots - 90 Minutes",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-02-05&duration=90",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-05"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "90"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Different Advisors",
+          "item": [
+            {
+              "name": "Get Slots - PM 001",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&date=2026-02-05&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-05"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Slots - PM 002",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-002&date=2026-02-05&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-002"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-05"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Slots - PM 003",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-003&date=2026-02-05&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-003"
+                    },
+                    {
+                      "key": "date",
+                      "value": "2026-02-05"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validation Errors",
+          "item": [
+            {
+              "name": "Get Slots - Missing advisorId",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?date=2026-02-05&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "date",
+                      "value": "2026-02-05"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Slots - Missing date",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots?advisorId=touch:portfolio-manager:pm-001&duration=30",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"],
+                  "query": [
+                    {
+                      "key": "advisorId",
+                      "value": "touch:portfolio-manager:pm-001"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Slots - No Parameters",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Request-Id",
+                    "value": "{{$guid}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v{{apiVersion}}/{{domain}}/functions/get-available-slots",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v{{apiVersion}}", "{{domain}}", "functions", "get-available-slots"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

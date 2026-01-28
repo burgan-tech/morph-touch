@@ -57,44 +57,63 @@
           "multipleOf": 15,
           "default": 15
         },
+        "useDefaultWorkingHours": {
+          "type": "boolean",
+          "description": "If true, uses default working hours from appsettings.json configuration. If false, uses custom workingHours defined below.",
+          "default": true
+        },
         "workingHours": {
           "type": "object",
-          "description": "Working hours for this portfolio manager",
+          "description": "Custom working hours for this portfolio manager. Supports multiple time ranges per day (e.g., morning and afternoon sessions with lunch break). Only used when useDefaultWorkingHours is false.",
           "properties": {
             "monday": {
-              "type": "string",
-              "description": "Working hours for Monday (e.g., '09:00-17:00' or 'closed')",
-              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+              "type": "array",
+              "description": "Working hours for Monday. Empty array means closed.",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
             },
             "tuesday": {
-              "type": "string",
-              "description": "Working hours for Tuesday (e.g., '09:00-17:00' or 'closed')",
-              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+              "type": "array",
+              "description": "Working hours for Tuesday. Empty array means closed.",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
             },
             "wednesday": {
-              "type": "string",
-              "description": "Working hours for Wednesday (e.g., '09:00-17:00' or 'closed')",
-              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+              "type": "array",
+              "description": "Working hours for Wednesday. Empty array means closed.",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
             },
             "thursday": {
-              "type": "string",
-              "description": "Working hours for Thursday (e.g., '09:00-17:00' or 'closed')",
-              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+              "type": "array",
+              "description": "Working hours for Thursday. Empty array means closed.",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
             },
             "friday": {
-              "type": "string",
-              "description": "Working hours for Friday (e.g., '09:00-17:00' or 'closed')",
-              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+              "type": "array",
+              "description": "Working hours for Friday. Empty array means closed.",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
             },
             "saturday": {
-              "type": "string",
-              "description": "Working hours for Saturday (e.g., '09:00-17:00' or 'closed')",
-              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+              "type": "array",
+              "description": "Working hours for Saturday. Empty array means closed.",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
             },
             "sunday": {
-              "type": "string",
-              "description": "Working hours for Sunday (e.g., '09:00-17:00' or 'closed')",
-              "pattern": "^(closed|[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9])$"
+              "type": "array",
+              "description": "Working hours for Sunday. Empty array means closed.",
+              "items": {
+                "$ref": "#/$defs/timeRange"
+              }
             }
           },
           "required": [
@@ -108,13 +127,34 @@
           ]
         }
       },
+      "$defs": {
+        "timeRange": {
+          "type": "object",
+          "description": "A time range within a day",
+          "properties": {
+            "start": {
+              "type": "string",
+              "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Start time in HH:mm format (e.g., '09:00')"
+            },
+            "end": {
+              "type": "string",
+              "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "End time in HH:mm format (e.g., '18:00')"
+            }
+          },
+          "required": [
+            "start",
+            "end"
+          ]
+        }
+      },
       "required": [
         "user",
         "person",
         "timezone",
         "availableSlotDurations",
-        "breakDurationBetweenAppointments",
-        "workingHours"
+        "breakDurationBetweenAppointments"
       ],
       "additionalProperties": false
     }

@@ -1,0 +1,36 @@
+{
+  "key": "get-available-slots-task",
+  "flow": "sys-tasks",
+  "domain": "touch",
+  "version": "1.0.0",
+  "flowVersion": "1.0.0",
+  "tags": [
+    "appointments",
+    "availability",
+    "slots",
+    "advisor",
+    "dapr",
+    "service"
+  ],
+  "attributes": {
+    "type": "3",
+    "labels": [
+      {
+        "label": "Get Available Slots",
+        "language": "en-US"
+      },
+      {
+        "label": "Müsait Slotları Getir",
+        "language": "tr-TR"
+      }
+    ],
+    "description": "Dapr Service Task that queries absence-entry workflow instances to calculate available appointment slots for a given advisor on a specific date.",
+    "config": {
+      "appId": "vnext-app",
+      "methodName": "api/v1/touch/workflows/absence-entry/instances",
+      "httpVerb": "GET",
+      "queryString": "status=Active&currentState=scheduled,active&pageSize=100",
+      "timeoutSeconds": 30
+    }
+  }
+}
